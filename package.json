@@ -1,0 +1,66 @@
+{
+  "name": "ga4-mcp",
+  "version": "1.0.0",
+  "description": "GA4 + Google Search Console MCP server for Claude, Copilot, Cursor, Codex, Gemini, and any MCP-compatible AI agent.",
+  "type": "module",
+  "bin": {
+    "ga4-mcp": "./dist/server.js"
+  },
+  "files": [
+    "dist/server.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "build:prod": "NODE_ENV=production node esbuild.config.mjs",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build:prod"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "google-analytics",
+    "ga4",
+    "google-search-console",
+    "gsc",
+    "seo",
+    "indexing-api",
+    "claude",
+    "copilot",
+    "cursor",
+    "codex",
+    "gemini",
+    "ai",
+    "stdio"
+  ],
+  "author": {
+    "name": "chimpmatic",
+    "url": "https://chimpmatic.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chimpmatic/ga4-mcp.git"
+  },
+  "homepage": "https://chimpmatic.com",
+  "bugs": {
+    "url": "https://github.com/chimpmatic/ga4-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@google-analytics/admin": "^9.0.1",
+    "@google-analytics/data": "^5.2.1",
+    "@googleapis/searchconsole": "^6.0.1",
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "google-auth-library": "^10.6.2",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  }
+}
