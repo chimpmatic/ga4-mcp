@@ -1,0 +1,15 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      tools:
+        type: string
+        description: "Comma-separated tool groups: ga4, gsc, indexing, admin, all"
+        default: "all"
+    required: []
+  commandFunction: |-
+    (config) => ({
+      command: 'npx',
+      args: ['-y', 'ga4-mcp', '--tools', config.tools || 'all']
+    })

@@ -1,6 +1,12 @@
 # ga4-mcp
 
+[![npm version](https://img.shields.io/npm/v/ga4-mcp.svg)](https://www.npmjs.com/package/ga4-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/ga4-mcp.svg)](https://www.npmjs.com/package/ga4-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 GA4 + Google Search Console MCP server. Works with Claude, Copilot, Cursor, Codex, Gemini, and any MCP-compatible AI agent.
+
+16 tools for Google Analytics 4, Search Console, and the Indexing API — run reports, inspect URLs, submit sitemaps, manage properties, and request indexing, all from your AI agent.
 
 ## Quick Start
 
