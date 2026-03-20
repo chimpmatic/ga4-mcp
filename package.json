@@ -1,6 +1,6 @@
 {
   "name": "ga4-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GA4 + Google Search Console MCP server for Claude, Copilot, Cursor, Codex, Gemini, and any MCP-compatible AI agent.",
   "type": "module",
   "bin": {
