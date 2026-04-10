@@ -287,6 +287,17 @@ async function main() {
 
         console.error('[ga4-mcp] Server started, waiting for connections...');
 
+        // Clean shutdown when the parent process closes stdin (e.g. Claude Code session ends).
+        // Without this, the process stays alive in a busy loop consuming 100% CPU.
+        process.stdin.on('end', () => {
+            console.error('[ga4-mcp] stdin closed, shutting down...');
+            server.close().then(() => process.exit(0));
+        });
+        process.stdin.on('close', () => {
+            console.error('[ga4-mcp] stdin closed, shutting down...');
+            server.close().then(() => process.exit(0));
+        });
+
         process.on('SIGTERM', () => {
             console.error('[ga4-mcp] Received SIGTERM, shutting down...');
             server.close().then(() => process.exit(0));
@@ -298,13 +309,16 @@ async function main() {
     }
 }
 
-// Prevent crashes from killing the server
+// Log unexpected errors and exit — swallowing them silently causes
+// zombie processes that spin at 100% CPU when stdin is already closed.
 process.on('uncaughtException', (err) => {
     console.error('[ga4-mcp] Uncaught exception:', err);
+    process.exit(1);
 });
 
 process.on('unhandledRejection', (reason) => {
     console.error('[ga4-mcp] Unhandled rejection:', reason);
+    process.exit(1);
 });
 
 main().catch((err) => {
