@@ -283,29 +283,35 @@ async function main() {
         // stdio transport — single server instance
         const server = createServer();
         const transport = new mcpStdio.StdioServerTransport();
+        let shuttingDown = false;
+        const shutdown = async (reason: string) => {
+            if (shuttingDown) return;
+            shuttingDown = true;
+            console.error(`[ga4-mcp] ${reason}, shutting down...`);
+            process.stdin.off('end', onStdinClosed);
+            process.stdin.off('close', onStdinClosed);
+            process.off('SIGTERM', onSigterm);
+            process.off('SIGINT', onSigint);
+            try {
+                await server.close();
+                process.exit(0);
+            } catch (err) {
+                console.error('[ga4-mcp] Shutdown failed:', err);
+                process.exit(1);
+            }
+        };
+        const onStdinClosed = () => { void shutdown('stdin closed'); };
+        const onSigterm = () => { void shutdown('Received SIGTERM'); };
+        const onSigint = () => { void shutdown('Received SIGINT'); };
+
+        // Register before connect so an EOF during startup is not missed.
+        process.stdin.once('end', onStdinClosed);
+        process.stdin.once('close', onStdinClosed);
+        process.once('SIGTERM', onSigterm);
+        process.once('SIGINT', onSigint);
+
         await server.connect(transport);
-
         console.error('[ga4-mcp] Server started, waiting for connections...');
-
-        // Clean shutdown when the parent process closes stdin (e.g. Claude Code session ends).
-        // Without this, the process stays alive in a busy loop consuming 100% CPU.
-        process.stdin.on('end', () => {
-            console.error('[ga4-mcp] stdin closed, shutting down...');
-            server.close().then(() => process.exit(0));
-        });
-        process.stdin.on('close', () => {
-            console.error('[ga4-mcp] stdin closed, shutting down...');
-            server.close().then(() => process.exit(0));
-        });
-
-        process.on('SIGTERM', () => {
-            console.error('[ga4-mcp] Received SIGTERM, shutting down...');
-            server.close().then(() => process.exit(0));
-        });
-        process.on('SIGINT', () => {
-            console.error('[ga4-mcp] Received SIGINT, shutting down...');
-            server.close().then(() => process.exit(0));
-        });
     }
 }
 
